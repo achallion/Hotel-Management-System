@@ -45,13 +45,18 @@ public class Hotel {
         return this.totalRooms - this.occupiedRooms;
     }
 
-    public String getContact()
-    {
+    public String getContact() {
         return this.contact;
     }
 
     public int getPrice() {
         return this.price;
     }
-  
+
+    public void bookRooms(int numRooms) {
+        if (this.getFreeRooms() < numRooms)
+            throw new IllegalStateException("Required Number Of Free Rooms is not present in " + this.getName());
+        this.setOccupiedRooms(this.getOccupiedRooms() + numRooms);
+    }
+
 }

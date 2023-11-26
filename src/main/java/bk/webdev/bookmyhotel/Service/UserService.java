@@ -19,8 +19,6 @@ public class UserService {
     @Autowired
     private HotelDao hotelDao;
 
-
-
     public ResponseEntity<List<HotelWrapper>> getAllHotels() {
         List<Hotel> hotelsList = hotelDao.findAll();
         List<HotelWrapper> allHotels = new ArrayList<>();
@@ -28,20 +26,32 @@ public class UserService {
             HotelWrapper hw = new HotelWrapper(h);
             allHotels.add(hw);
         }
-        return new ResponseEntity<>(allHotels,HttpStatus.OK);
+        return new ResponseEntity<>(allHotels, HttpStatus.OK);
     }
-
-
 
     public ResponseEntity<HotelWrapper> getHotelInfo(int id) {
 
         Optional<Hotel> hotelOptional = hotelDao.findById(id);
-        if(!hotelOptional.isPresent())
-        {
+        if (!hotelOptional.isPresent()) {
             throw new IllegalStateException("No Hotel Found With Such Id");
         }
 
-        return new ResponseEntity<>(new HotelWrapper(hotelOptional.get()),HttpStatus.OK);
+        return new ResponseEntity<>(new HotelWrapper(hotelOptional.get()), HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> bookHotel(int id, int numRooms) {
+        Optional<Hotel> hotelOptional = hotelDao.findById(id);
+        if (!hotelOptional.isPresent())
+            throw new IllegalStateException("No Hotel Found With Such Id");
+        Hotel hotel = hotelOptional.get();
+        try {
+            hotel.bookRooms(numRooms);
+            hotelDao.save(hotel);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("Booking Successfully Done", HttpStatus.OK);
     }
 
 }

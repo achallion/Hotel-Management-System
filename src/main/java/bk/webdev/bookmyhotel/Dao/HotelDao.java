@@ -7,5 +7,6 @@ import bk.webdev.bookmyhotel.Model.Hotel;
 
 @Repository
 public interface HotelDao extends JpaRepository<Hotel, Integer> {
+
     
 }
