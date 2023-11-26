@@ -18,8 +18,8 @@ public class Hotel {
     @SequenceGenerator(name = "hotel_id_gen", sequenceName = "hotel_seq", allocationSize = 2)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hotel_id_gen")
     private int id;
-    private Integer totalRooms, occupiedRooms;
-    private String owner, name;
+    private int totalRooms, occupiedRooms, price;
+    private String owner, name, contact;
 
     public int getId() {
         return this.id;
@@ -43,6 +43,15 @@ public class Hotel {
 
     public int getFreeRooms() {
         return this.totalRooms - this.occupiedRooms;
+    }
+
+    public String getContact()
+    {
+        return this.contact;
+    }
+
+    public int getPrice() {
+        return this.price;
     }
   
 }
