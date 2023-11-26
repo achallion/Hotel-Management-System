@@ -1,9 +1,12 @@
 package bk.webdev.bookmyhotel.Model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -20,6 +23,12 @@ public class Hotel {
     private int id;
     private int totalRooms, occupiedRooms, price;
     private String owner, name, contact;
+
+    @ManyToMany
+    List<User> userHistory;
+
+    @ManyToMany
+    List<User> currentUsers;
 
     public int getId() {
         return this.id;
