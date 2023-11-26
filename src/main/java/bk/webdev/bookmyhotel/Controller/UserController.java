@@ -6,12 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import bk.webdev.bookmyhotel.Model.Hotel;
 import bk.webdev.bookmyhotel.Model.HotelWrapper;
 import bk.webdev.bookmyhotel.Service.UserService;
 
@@ -20,15 +17,15 @@ import bk.webdev.bookmyhotel.Service.UserService;
 public class UserController {
 
     @Autowired
-    private UserService hotelService;
+    private UserService userService;
 
     @GetMapping("{id}")
-    public Hotel getHotelInfo(@PathVariable int id) {
-        return new Hotel();
+    public ResponseEntity<HotelWrapper> getHotelInfo(@PathVariable int id) {
+        return userService.getHotelInfo(id);
     }
 
     @GetMapping("allhotels")
     public ResponseEntity<List<HotelWrapper>> getAllHotels() {
-        return hotelService.getAllHotels();
+        return userService.getAllHotels();
     }
 }
