@@ -39,8 +39,8 @@ public class User {
         return sha256HashString.substring(0, 10);
     }
 
-    public void generateAccessToken() throws NoSuchAlgorithmException {
+    public void generateAccessToken(int unique) throws NoSuchAlgorithmException {
         System.out.println(this.getId());
-        this.accessToken = generateHash(email) + generateHash(password);
+        this.accessToken = generateHash(email) + unique + generateHash(password);
     }
 }

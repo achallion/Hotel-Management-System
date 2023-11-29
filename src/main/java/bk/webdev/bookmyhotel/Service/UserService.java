@@ -61,11 +61,12 @@ public class UserService {
 
     public ResponseEntity<String> addUser(User user) {
         Optional<User> userOptional = userDao.existsByEmail(user.getEmail());
+        Optional<Integer> lastIdOptional = userDao.findLastId();
         if (userOptional.isPresent())
             return new ResponseEntity<>("User With Same Email Already Exists at id : " + userOptional.get().getEmail(),
                     HttpStatus.NOT_MODIFIED);
         try {
-            user.generateAccessToken();
+            user.generateAccessToken(lastIdOptional.isPresent() ? lastIdOptional.get() : 0);
             userDao.save(user);
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage());

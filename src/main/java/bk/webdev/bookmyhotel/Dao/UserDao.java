@@ -12,4 +12,7 @@ import bk.webdev.bookmyhotel.Model.User;
 public interface UserDao extends JpaRepository<User, Integer> {
     @Query("SELECT user FROM User user WHERE user.email = ?1")
     Optional<User> existsByEmail(String email);
+
+    @Query("SELECT MAX(user.id) FROM User user")
+    Optional<Integer> findLastId();
 }
