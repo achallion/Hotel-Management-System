@@ -2,6 +2,7 @@ package bk.webdev.bookmyhotel.Model;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,11 +25,12 @@ public class Hotel {
     private int totalRooms, occupiedRooms, price;
     private String owner, name, contact;
 
-    @ManyToMany
-    List<User> userHistory;
-
-    @ManyToMany
+    @ManyToMany(targetEntity = User.class, mappedBy = "currentHotels", cascade = { CascadeType.DETACH,
+            CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     List<User> currentUsers;
+
+    // List<User> userHistory;
+    
 
     public int getId() {
         return this.id;

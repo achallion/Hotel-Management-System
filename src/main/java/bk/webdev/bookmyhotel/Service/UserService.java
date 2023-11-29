@@ -10,14 +10,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import bk.webdev.bookmyhotel.Dao.HotelDao;
+import bk.webdev.bookmyhotel.Dao.UserDao;
 import bk.webdev.bookmyhotel.Model.Hotel;
 import bk.webdev.bookmyhotel.Model.HotelWrapper;
+import bk.webdev.bookmyhotel.Model.User;
 
 @Service
 public class UserService {
 
     @Autowired
     private HotelDao hotelDao;
+
+    @Autowired
+    private UserDao userDao;
 
     public ResponseEntity<List<HotelWrapper>> getAllHotels() {
         List<Hotel> hotelsList = hotelDao.findAll();
@@ -52,6 +57,21 @@ public class UserService {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("Booking Successfully Done", HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> addUser(User user) {
+        Optional<User> userOptional = userDao.existsByEmail(user.getEmail());
+        if (userOptional.isPresent())
+            return new ResponseEntity<>("User With Same Email Already Exists at id : " + userOptional.get().getEmail(),
+                    HttpStatus.NOT_MODIFIED);
+        try {
+            user.generateAccessToken();
+            userDao.save(user);
+        } catch (Exception e) {
+            throw new IllegalStateException(e.getMessage());
+        }
+
+        return new ResponseEntity<>("Successfully Created User at ID : " + user.getId(), HttpStatus.CREATED);
     }
 
 }
