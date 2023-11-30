@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import bk.webdev.bookmyhotel.Model.HotelWrapper;
 import bk.webdev.bookmyhotel.Model.User;
+import bk.webdev.bookmyhotel.Model.UserAccess;
 import bk.webdev.bookmyhotel.Service.UserService;
 
 @RestController
@@ -34,8 +35,8 @@ public class UserController {
     }
 
     @PostMapping("book/{hotelId}")
-    public ResponseEntity<String> bookHotel(@PathVariable("hotelId") int id, @RequestParam("num_rooms") int numRooms) {
-        return userService.bookHotel(id, numRooms);
+    public ResponseEntity<String> bookHotel(@PathVariable("hotelId") int id, @RequestParam("num_rooms") int numRooms, @RequestBody UserAccess userAccess ) {
+        return userService.bookHotel(id, numRooms, userAccess);
     }
 
     @PostMapping("user/add")

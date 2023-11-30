@@ -29,8 +29,9 @@ public class Hotel {
             CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     List<User> currentUsers;
 
-    // List<User> userHistory;
-    
+    @ManyToMany(targetEntity = User.class, mappedBy = "hotelHistory", cascade = { CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.PERSIST, CascadeType.REFRESH })
+    List<User> userHistory;
 
     public int getId() {
         return this.id;
@@ -64,10 +65,12 @@ public class Hotel {
         return this.price;
     }
 
-    public void bookRooms(int numRooms) {
+    public void bookRooms(int numRooms, User user) {
         if (this.getFreeRooms() < numRooms)
             throw new IllegalStateException("Required Number Of Free Rooms is not present in " + this.getName());
         this.setOccupiedRooms(this.getOccupiedRooms() + numRooms);
+        currentUsers.add(user);
+        userHistory.add(user);
     }
 
 }

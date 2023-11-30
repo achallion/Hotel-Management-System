@@ -25,12 +25,12 @@ public class User {
     @Column(unique = true)
     private String email;
 
-    // @ManyToMany
-    // private List<HotelWrapper> hotelHistory;
+    @ManyToMany(targetEntity = Hotel.class, cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    private List<Hotel> hotelHistory;
 
     @ManyToMany(targetEntity = Hotel.class, cascade = { CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.REFRESH })
-    private List<HotelWrapper> currentHotels;
+    private List<Hotel> currentHotels;
 
     private String generateHash(String str) throws NoSuchAlgorithmException {
         MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
@@ -42,5 +42,10 @@ public class User {
     public void generateAccessToken(int unique) throws NoSuchAlgorithmException {
         System.out.println(this.getId());
         this.accessToken = generateHash(email) + unique + generateHash(password);
+    }
+
+    public void bookHotel(Hotel hotel) {
+        currentHotels.add(hotel);
+        hotelHistory.add(hotel);
     }
 }

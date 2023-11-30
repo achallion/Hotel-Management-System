@@ -14,6 +14,7 @@ import bk.webdev.bookmyhotel.Dao.UserDao;
 import bk.webdev.bookmyhotel.Model.Hotel;
 import bk.webdev.bookmyhotel.Model.HotelWrapper;
 import bk.webdev.bookmyhotel.Model.User;
+import bk.webdev.bookmyhotel.Model.UserAccess;
 
 @Service
 public class UserService {
@@ -44,14 +45,27 @@ public class UserService {
         return new ResponseEntity<>(new HotelWrapper(hotelOptional.get()), HttpStatus.OK);
     }
 
-    public ResponseEntity<String> bookHotel(int id, int numRooms) {
+    public ResponseEntity<String> bookHotel(int id, int numRooms, UserAccess userAccess) {
+        // check if user is valid
+        Optional<User> userOptional = userDao.findById(userAccess.getId());
+        if(!userOptional.isPresent())
+            return new ResponseEntity<>("User Not Found.", HttpStatus.BAD_REQUEST);
+        if(!userAccess.getAccessToken().equals(userOptional.get().getAccessToken()))
+            return new ResponseEntity<>("Wrong User Access Token. Cannot Verify Request.",HttpStatus.UNAUTHORIZED);
+
+        // User is authenticated. Now, find the hotel
         Optional<Hotel> hotelOptional = hotelDao.findById(id);
         if (!hotelOptional.isPresent())
-            throw new IllegalStateException("No Hotel Found With Such Id");
+            return new ResponseEntity<>("No Hotel Found With Id : " + id, HttpStatus.NOT_FOUND);
+
+        // Hotel Found and User Found
+        User user = userOptional.get();
         Hotel hotel = hotelOptional.get();
         try {
-            hotel.bookRooms(numRooms);
+            hotel.bookRooms(numRooms, user);
+            user.bookHotel(hotel);
             hotelDao.save(hotel);
+            userDao.save(user);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
